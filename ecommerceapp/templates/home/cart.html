@@ -1,0 +1,64 @@
+{% extends 'home/base.html' %}
+{% block body %}
+{% include 'separate/navbar.html' %}
+<div class="container">
+<div class="row justify-content-center">
+  <div class="col-md-10">
+
+
+  <table class="table table-bordered table_background">
+    <thead>
+
+      <tr>
+
+        <th scope="col">Product</th>
+        <th scope="col">Name</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+
+        <td><img src="{{ item.product.product_image.url }}" alt="" class="item_image"></td>
+        <td>{{item.product.product_name }}</td>
+        <td> <span  data-product={{ item.product.id}} data-action="add" class="update-cart"><i class="fas fa-plus"></i></span>{{ item.quantity }}
+
+       <span  data-product={{ item.product.id}} data-action="remove" class="update-cart btn btn-sm"><i class="fas fa-minus"></i></span>
+        </td>
+        <td>${{ item.get_total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+</div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 card ">
+<div class="card-body">
+
+  <div class="text-center">
+    <a href="{% url 'product_list' %}" class="btn btn-primary m-3"> Continue Shipping </a>
+  </div>
+  <table class="table">
+<tbody>
+  <tr>
+    <td><strong>Total Items : {{order.get_total_item }}</strong></td>
+    <td><strong>Total Price : ${{order.get_item_total_price }}</strong></td>
+    <td><a href="{% url 'checkout_list' %}" class="btn btn-success"> Checkout</a></td>
+  </tr>
+
+</tbody>
+
+</table>
+</div>
+
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

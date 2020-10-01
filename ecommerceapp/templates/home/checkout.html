@@ -1,0 +1,148 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block body %}
+{% include 'separate/navbar.html' %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+<div class="card">
+  <div class="card-body" id="form-wrapper">
+
+            <form id="form">
+                <div id="user-info">
+        <div class="form-group">
+        <input type="text" name="name" class="form-control"  placeholder="Name here" required>
+        </div>
+        <div class="form-group">
+    <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+        </div>
+          </div>
+
+
+          <div id="shipping-info">
+            <h2>Shipping information</h2>
+            <div class="form-group">
+              <input type="text" class="formfield" name="address" placeholder="address...." required>
+              <input type="text" class="formfield" name="city" placeholder="city....." required>
+              <input type="text" class="formfield" name="state" placeholder="state...." required>
+              <input type="text" class="formfield" name="zipcode" placeholder="zipcode....." required>
+            </div>
+          </div>
+          <button type="submit" id="form-button" class="btn btn-outline-primary btn-block">Continue</button>
+
+          <div class="hidden" id="payment-info">
+              <small>Paymant</small> <button id="make-payment" type="submit" class="btn btn-outline-secondary">Make Payment</button>
+          </div>
+
+      </form>
+
+  </div>
+</div>
+
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h3>Your Order</h3>
+          <table class="table table-bordered table_background">
+            <thead>
+
+              <tr>
+
+                <th scope="col">Product</th>
+                <th scope="col">Name</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+              <tr>
+
+                <td><img src="{{ item.product.product_image.url }}" alt="" class="item_image"></td>
+                <td>{{item.product.product_name }}</td>
+              <td>{{ item.quantity }} </td>
+                <td>${{ item.get_total }}</td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td colspan="2">Total</td>
+                <td><strong>{{order.get_total_item }}</strong></td>
+                <td><strong name="total">${{order.get_item_total_price }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+      var shipping = '{{ order.shipping }}'
+      var total = '{{ order.get_item_total_price}}'
+          if(shipping == 'False'){
+            document.getElementById('shipping-info').innerHTML = ''
+          }
+          if(user != 'AnonymousUser'){
+            document.getElementById('user-info').innerHTML = ''
+          }
+          if(shipping == 'False' && user != 'AnonymousUser'){
+            document.getElementById('form-wrapper').classList.add("hidden");
+            document.getElementById('payment-info').classList.remove("hidden");
+          }
+
+      var form = document.getElementById('form')
+      form.addEventListener('submit', function(e){
+        e.preventDefault()
+        console.log('form submitted')
+        document.getElementById('form-button').classList.add('hidden')
+        document.getElementById('payment-info').classList.remove('hidden')
+
+      })
+      document.getElementById('make-payment').addEventListener('click', function(e){
+      submitFormData()
+      })
+      function submitFormData(){
+            var userFormData = {
+              'name': null,
+              'email': null,
+              'total': total,
+            }
+            var shippingInfo = {
+              'address': null,
+              'city': null,
+              'state': null,
+              'zipcode': null,
+            }
+      if(shipping != 'False'){
+        shippingInfo.address = form.address.value
+        shippingInfo.city = form.city.value
+        shippingInfo.state = form.state.value
+        shippingInfo.zipcode = form.zipcode.value
+      }
+      if( user == 'AnonymousUser'){
+        userFormData.name = form.name.value
+        userFormData.email = form.email.value
+
+      }
+    var url = '/process_order/'
+    fetch(url, {
+      method : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body : JSON.stringify({ 'form': userFormData, 'shipping': shippingInfo})
+    })
+    .then((response) => response.json())
+    .then((data) =>{
+      console.log('success:', data)
+      alert(' transaction complated');
+      cart = {}
+      document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+      window.location.href = "{% url 'product_list' %}"
+    })
+
+}
+</script>
+{% endblock %}

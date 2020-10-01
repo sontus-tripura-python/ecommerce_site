@@ -1,0 +1,23 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block body %}
+{% include 'separate/navbar.html' %}
+<div class="container">
+{% for product in products %}
+  <div class="card product_box">
+    <div class="card-body">
+<a href="{% url 'product_details' %}">
+      <img src="{{ product.product_image.url }}" class="img-fluid product_image" alt="Responsive image">
+      <hr>
+  <h5>{{ product.product_name }}</h5>
+    <p><strong>${{product.price }}</strong> <span class="badge badge-{{ product.get_label_display }}">new</span> </p>
+
+  </a>
+  <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+    </div>
+
+  </div>
+{% endfor %}
+
+</div>
+{% endblock %}

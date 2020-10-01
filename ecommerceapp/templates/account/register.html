@@ -1,0 +1,70 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block body %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 card">
+      <div class="card-body">
+
+
+      {% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+<strong>Message : </strong>{{ message }}
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+{% endfor %}
+{% endif %}
+<form method="post">
+{% csrf_token %}
+<div class="form-group">
+  <label for="userField">Username</label>
+  <input type="text" name="username"
+  id="usernameField" class="form-control" value="{{ fieldValue.username}}"
+    placeholder="Choose a username with minimum 5 characters" required>
+
+</div>
+<div class="usernameinvalid-feedback" style="display: none; color:red; font-style: italic;">
+</div>
+
+<div class="form-group">
+    <label for="firsname">First Name</label>
+    <input type="text" name="fname"
+    id="firsname" class="form-control"
+      placeholder="Your first name" required>
+
+  </div>
+  <div class="form-group">
+      <label for="lastname">Last Name</label>
+      <input type="text" name="lname"
+      id="lastname" class="form-control"
+
+        placeholder="Your last name" required>
+
+    </div>
+
+<div class="form-group">
+<label for="email">Email address</label>
+<input type="email" class="form-control" id="Emailfield"
+ aria-describedby="emailHelp" name="email" value="{{ fieldValue.email}}" placeholder="Enter email" required>
+
+</div>
+<div class="emailinvalid-feedback" style="display: none; color:red; font-style: italic;">
+</div>
+<div class="form-group">
+<label for="password">Password</label>
+<input type="password" name="password" class="form-control" id="passwordField" placeholder="Password" required>
+<small>password at least 8 characters</small>
+<small class="float-right py-3" id="showPasswordToggle">SHOW</small>
+</div>
+
+
+<button type="submit" class="btn btn-primary" id="submit-btn">Submit</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
